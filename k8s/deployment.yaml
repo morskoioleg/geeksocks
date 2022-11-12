@@ -1,19 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: maintenance-nginx
+  name: geeksocks-nginx
 spec:
   selector:
     matchLabels:
-      run: maintenance-nginx
+      run: geeksocks-nginx
   replicas: 1
   template:
     metadata:
       labels:
-        run: maintenance-nginx
+        run: geeksocks-nginx
     spec:
       containers:
         - image: morskoi/geeksocks:0.0.2
-          name: maintenance-nginx
+          name: geeksocks-nginx
           ports:
           - containerPort: 80
+        #    containerPort: 443
