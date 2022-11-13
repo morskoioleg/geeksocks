@@ -13,7 +13,7 @@ spec:
         run: geeksocks-nginx
     spec:
       containers:
-        - image: morskoi/geeksocks:0.0.2
+        - image: morskoi/geeksocks
           name: geeksocks-nginx
           ports:
           - containerPort: 80

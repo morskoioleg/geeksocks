@@ -1,13 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+#  cert-manager.io/issuer: letsencrypt-staging
   name: geeksocks-ingress
-spec:
+  annotations:
+    cert-manager.io/issuer: letsencrypt-production
+#    cert-manager.io/cluster-issuer: letsencrypt
+    acme.cert-manager.io/http01-edit-in-place: "true"
 #  ingressClassName: nginx-example
+spec:  
   tls:
   - hosts:
     - k8s.geeksocks.ru
-    secretName: geeksocks-tls-secret
+    secretName: web-tls
   rules:
   - host: k8s.geeksocks.ru
     http:

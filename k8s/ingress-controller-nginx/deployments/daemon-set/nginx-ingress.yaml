@@ -16,6 +16,8 @@ spec:
        #prometheus.io/port: "9113"
        #prometheus.io/scheme: http
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: node-1.root.local.io
       serviceAccountName: nginx-ingress
       automountServiceAccountToken: true
       containers:
