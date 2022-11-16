@@ -12,9 +12,28 @@ spec:
       labels:
         run: geeksocks-nginx
     spec:
+      initContainers:
+        - image: busybox
+          name: printhostname
+          command: ["sh", "-c", "echo $HOSTNAME > /app/hostname.txt"]
+          volumeMounts:
+          - name: workdir
+            mountPath: "/app" # <-- change the mount path not to overwrite your .jar
       containers:
-        - image: morskoi/geeksocks
+        - image: morskoi/geeksocks:0.0.8
           name: geeksocks-nginx
+          imagePullPolicy: Always
           ports:
           - containerPort: 80
-        #    containerPort: 443
+          volumeMounts:
+            - mountPath: /usr/share/nginx/html/img_s3
+              name: s3-volume
+            - mountPath: /usr/share/nginx/html/app
+              name: workdir
+      volumes:
+        - name: s3-volume
+          persistentVolumeClaim:
+            claimName: csi-s3-pvc-static
+            readOnly: false
+        - name: workdir
+          emptyDir: {}

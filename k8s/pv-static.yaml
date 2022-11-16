@@ -1,0 +1,31 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-yandex-static
+spec:
+  storageClassName: csi-s3
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  claimRef:
+    namespace: default
+    name: csi-s3-pvc-static
+  csi:
+    driver: ru.yandex.s3.csi
+    volumeHandle: test-1-oleg-sldhfksdf7t/pvc-geeksocks
+    controllerPublishSecretRef:
+      name: csi-s3-secret
+      namespace: kube-system
+    nodePublishSecretRef:
+      name: csi-s3-secret
+      namespace: kube-system
+    nodeStageSecretRef:
+      name: csi-s3-secret
+      namespace: kube-system
+    volumeAttributes:
+      capacity: 10Gi
+      mounter: geesefs
+      options: "--memory-limit=1000 --dir-mode=0777 --file-mode=0666 --uid=1001"
+

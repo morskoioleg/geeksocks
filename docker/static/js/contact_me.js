@@ -21,13 +21,17 @@ $(function() {
                 firstName = name.split(' ').slice(0, -1).join(' ');
             }
             $.ajax({
-                url: "././mail/contact_me.php",
+                url: "https://k8s.geeksocks.ru/mail/send",
                 type: "POST",
                 data: {
                     name: name,
                     phone: phone,
                     email: email,
-                    message: message
+                    message: message,
+to: 'oleg.intax@gmail.com',
+subject: 'atac',
+template: 'verify',
+url: 'ya.ru'
                 },
                 cache: false,
                 success: function() {
