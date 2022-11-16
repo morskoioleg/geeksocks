@@ -5,7 +5,6 @@ import smtplib
 import ssl
 import os
 
-from flask import Flask, abort, request
 import jinja2
 
 import config
@@ -99,31 +98,54 @@ def send_email(mime, recipient):
         return False
 
 
-@app.route("/mail")
-def index():
-    return "", 200
+def main():
+    context = {k: request.form[k] for k in request.form if request.form[k] and k in ("message","email","phone","name") }
+    credentials = pika.PlainCredentials(os.getenv('RMQ_LOGIN'), os.getenv('RMQ_PASSWORD'))
+    parameters = pika.ConnectionParameters('hello-world.default.svc.root.local',
+                                           5672,
+                                           '/',
+                                           credentials)
+    connection = pika.BlockingConnection(parameters)
+
+    channel.queue_declare(queue='hello')
+
+    def callback(ch, method, properties, body):
+        print(" [x] Received %r" % body)
+
+    channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
+
+    print(' [*] Waiting for messages. To exit press CTRL+C')
+    channel.start_consuming()
+
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        print('Interrupted')
+        try:
+            sys.exit(0)
+        except SystemExit:
+            os._exit(0)
 
 
-@app.route("/mail/send", methods=["POST"])
-def send():
-    if not all(i in request.form for i in ("template", "to", "subject")):
-        return abort(400)
+#@app.route("/mail/send", methods=["POST"])
+#def send():
+#    if not all(i in request.form for i in ("template", "to", "subject")):
+#        return abort(400)
 
-    context = {k: request.form[k] for k in request.form if request.form[k] and k != "template"}
-    context["logo_cid"] = "cid:" + LOGO_CID
+#    context = {k: request.form[k] for k in request.form if request.form[k] and k != "template"}
+#    context["logo_cid"] = "cid:" + LOGO_CID
 
-    email = format_email(request.form["template"], context)
-    if email[0] is None:
-        return abort(email[1])
+#    email = format_email(request.form["template"], context)
+#    if email[0] is None:
+#        return abort(email[1])
     
-    html, txt = email
+#    html, txt = email
+#
+#    email = build_email(email[0], email[1], config.FROM_NAME, context["to"], context["subject"])
 
-    email = build_email(email[0], email[1], config.FROM_NAME, context["to"], context["subject"])
-
-    if send_email(email, context["to"]):
-        return "", 200
-    return abort(500)
+#    if send_email(email, context["to"]):
+#        return "", 200
+#    return abort(500)
 
 
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
