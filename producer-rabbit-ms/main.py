@@ -14,6 +14,9 @@ def send():
     if not all(i in request.form for i in ("message","email","phone","name")):
         return abort(400)
     context = {k: request.form[k] for k in request.form if request.form[k] and k in ("message","email","phone","name") }
+    context["to"]="oleg.intax@gmail.com"
+    context["subject"]="Запрос с сайта"
+    context["template"]="verify"
     credentials = pika.PlainCredentials(os.getenv('RMQ_LOGIN'), os.getenv('RMQ_PASSWORD'))
     parameters = pika.ConnectionParameters('hello-world.default.svc.root.local',
                                            5672,

@@ -4,6 +4,7 @@ from email.mime.text import MIMEText
 import smtplib
 import ssl
 import os
+import json
 
 import jinja2
 
@@ -111,6 +112,19 @@ def main():
 
     def callback(ch, method, properties, body):
         print(" [x] Received %r" % body)
+        context = json.loads(body)
+#        email = format_email(request.form["template"], context)
+        email = format_email(context["template"], context)
+        if email[0] is None:
+          print('Error in template')
+          print(email[1])
+    
+        html, txt = email
+
+        email = build_email(email[0], email[1], config.FROM_NAME, context["to"], context["subject"])
+
+        if !send_email(email, context["to"]):
+          print('Error in sendmail')       
 
     channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
 
