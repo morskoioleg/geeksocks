@@ -13,7 +13,7 @@ spec:
         run: geeksocks-mail
     spec:
       containers:
-        - image: morskoi/geeksocks-mail:0.0.5
+        - image: morskoi/geeksocks-mail:0.0.8
           imagePullPolicy: Always
           name: geeksocks-mail
           env:
@@ -31,6 +31,19 @@ spec:
                   key: password
                   optional: false # same as default; "mysecret" must exist
                             # and include a key named "password"
+            - name: RMQ_LOGIN
+              valueFrom:
+                secretKeyRef:
+                  name: hello-world-default-user
+                  key: username
+                  optional: false # same as default; "mysecret" must exist
+                            # and include a key named "username"
+            - name: RMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hello-world-default-user
+                  key: password
+                  optional: false # same as default; "mysecret" must exist
 #          ports:
 #          - containerPort: 5000
 #          volumeMounts:

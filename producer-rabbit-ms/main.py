@@ -1,6 +1,7 @@
 from flask import Flask, request, abort
 import pika
 import os
+import json
 
 app = Flask(__name__)
 
@@ -26,8 +27,8 @@ def send():
     channel = connection.channel()
 
     channel.queue_declare(queue='hello')
-
-    channel.basic_publish(exchange='', routing_key='hello', body=str(context))
+    print(json.dumps(context))
+    channel.basic_publish(exchange='', routing_key='hello', body=json.dumps(context))
     print(" [x] Sent !'")
     connection.close()    
     return "Sent", 200

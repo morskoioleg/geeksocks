@@ -5,13 +5,13 @@ import smtplib
 import ssl
 import os
 import json
-
+import pika
 import jinja2
-
+import sys
 import config
 
 
-app = Flask(__name__)
+#app = Flask(__name__)
 
 TEMPLATES = os.path.abspath("./templates")
 LOGO_CID = "logo"
@@ -100,20 +100,20 @@ def send_email(mime, recipient):
 
 
 def main():
-    context = {k: request.form[k] for k in request.form if request.form[k] and k in ("message","email","phone","name") }
+#    context = {k: request.form[k] for k in request.form if request.form[k] and k in ("message","email","phone","name") }
     credentials = pika.PlainCredentials(os.getenv('RMQ_LOGIN'), os.getenv('RMQ_PASSWORD'))
     parameters = pika.ConnectionParameters('hello-world.default.svc.root.local',
                                            5672,
                                            '/',
                                            credentials)
     connection = pika.BlockingConnection(parameters)
-
+    channel = connection.channel()
     channel.queue_declare(queue='hello')
 
     def callback(ch, method, properties, body):
         print(" [x] Received %r" % body)
         context = json.loads(body)
-#        email = format_email(request.form["template"], context)
+##        email = format_email(request.form["template"], context)
         email = format_email(context["template"], context)
         if email[0] is None:
           print('Error in template')
@@ -123,7 +123,7 @@ def main():
 
         email = build_email(email[0], email[1], config.FROM_NAME, context["to"], context["subject"])
 
-        if !send_email(email, context["to"]):
+        if not send_email(email, context["to"]):
           print('Error in sendmail')       
 
     channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)

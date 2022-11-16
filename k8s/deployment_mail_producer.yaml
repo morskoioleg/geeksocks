@@ -13,7 +13,7 @@ spec:
         run: geeksocks-mail-producer
     spec:
       containers:
-        - image: morskoi/geeksocks-mail-producer:0.0.1
+        - image: morskoi/geeksocks-mail-producer:0.0.2
           imagePullPolicy: Always
           name: geeksocks-mail-producer
           env:
