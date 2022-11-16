@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geeksocks-mail-producer
+spec:
+  selector:
+    matchLabels:
+      run: geeksocks-mail-producer
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: geeksocks-mail-producer
+    spec:
+      containers:
+        - image: morskoi/geeksocks-mail-producer:0.0.1
+          imagePullPolicy: Always
+          name: geeksocks-mail-producer
+          env:
+            - name: RMQ_LOGIN
+              valueFrom:
+                secretKeyRef:
+                  name: hello-world-default-user
+                  key: username
+                  optional: false # same as default; "mysecret" must exist
+                            # and include a key named "username"
+            - name: RMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hello-world-default-user
+                  key: password
+                  optional: false # same as default; "mysecret" must exist
+                            # and include a key named "password"
+#          ports:
+#          - containerPort: 5000
+#          volumeMounts:
+#          - name: passwordfile
+#            mountPath: "/app/secrets/"
+#            readOnly: true
+#      volumes:
+#      - name: passwordfile
+#        secret:
+#          secretName: geeksocks-mail-smtp-secret
+#          optional: false # default setting; "mysecret" must exist
