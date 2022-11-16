@@ -14,7 +14,6 @@ def send():
     if not all(i in request.form for i in ("message","email","phone","name")):
         return abort(400)
     context = {k: request.form[k] for k in request.form if request.form[k] and k in ("message","email","phone","name") }
-    print(context)    
     credentials = pika.PlainCredentials(os.getenv('RMQ_LOGIN'), os.getenv('RMQ_PASSWORD'))
     parameters = pika.ConnectionParameters('hello-world.default.svc.root.local',
                                            5672,
@@ -25,10 +24,10 @@ def send():
 
     channel.queue_declare(queue='hello')
 
-    channel.basic_publish(exchange='', routing_key='hello', body=context)
+    channel.basic_publish(exchange='', routing_key='hello', body=str(context))
     print(" [x] Sent !'")
     connection.close()    
-    return 200
+    return "Sent", 200
 
 
 if __name__ == "__main__":
