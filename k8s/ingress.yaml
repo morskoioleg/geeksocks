@@ -28,6 +28,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: geeksocks-mail
+            name: geeksocks-mail-producer
             port:
               number: 80

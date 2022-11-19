@@ -1,10 +1,27 @@
-from flask import Flask, request, abort
+from flask import Flask, request, abort, make_response, jsonify
 import pika
 import os
 import json
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 app = Flask(__name__)
 
+@app.errorhandler(429)
+def ratelimit_handler(e):
+    return make_response(
+            jsonify(error=f"error")
+            , 403
+    )
+
+limiter = Limiter(
+    app,
+    key_func=get_remote_address,
+    default_limits=["3 per minute"],
+    storage_uri="memory://",
+)
+
+@limiter.exempt
 @app.route("/mail")
 def index():
     return "", 200
@@ -30,9 +47,10 @@ def send():
     print(json.dumps(context))
     channel.basic_publish(exchange='', routing_key='hello', body=json.dumps(context))
     print(" [x] Sent !'")
-    connection.close()    
+    connection.close()
     return "Sent", 200
 
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', debug=True)
+
