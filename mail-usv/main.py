@@ -82,25 +82,18 @@ def send_email(mime, recipient):
             server.sendmail(config.EMAIL, recipient, mime)
         return True
     elif config.MODE == "STARTTLS":
-#LOGIN = ("***REMOVED***", "***REMOVED***")
         with smtplib.SMTP(*config.SMTP) as server:
             server.ehlo()
             server.starttls()
             server.ehlo()
             server.login(os.getenv('MAIL_SMTP_LOGIN'),os.getenv('MAIL_SMTP_PASSWORD'))
-#            server.login("***REMOVED***", "***REMOVED***")
             server.sendmail(config.EMAIL, recipient, mime)
-#            print("***REMOVED***")
-#            print("***REMOVED***")
-#            print(os.getenv('MAIL_SMTP_LOGIN'))
-#            print(os.getenv('MAIL_SMTP_PASSWORD'))
         return True
     else:
         return False
 
 
 def main():
-#    context = {k: request.form[k] for k in request.form if request.form[k] and k in ("message","email","phone","name") }
     credentials = pika.PlainCredentials(os.getenv('RMQ_LOGIN'), os.getenv('RMQ_PASSWORD'))
     parameters = pika.ConnectionParameters('hello-world.default.svc.root.local',
                                            5672,
@@ -108,12 +101,16 @@ def main():
                                            credentials)
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
-    channel.queue_declare(queue='hello')
+    channel.queue_declare(queue='customer_contact', durable=True)
 
     def callback(ch, method, properties, body):
         print(" [x] Received %r" % body)
+        print(ch)
+        print(method)
+        print(properties)
+
+
         context = json.loads(body)
-##        email = format_email(request.form["template"], context)
         email = format_email(context["template"], context)
         if email[0] is None:
           print('Error in template')
@@ -123,10 +120,13 @@ def main():
 
         email = build_email(email[0], email[1], config.FROM_NAME, context["to"], context["subject"])
 
-        if not send_email(email, context["to"]):
-          print('Error in sendmail')       
-
-    channel.basic_consume(queue='hello', on_message_callback=callback, auto_ack=True)
+        if send_email(email, context["to"]):
+          ch.basic_ack(delivery_tag = method.delivery_tag)
+        else:
+          print('Error in sendmail')
+          
+    channel.basic_qos(prefetch_count=1)
+    channel.basic_consume(queue='customer_contact', on_message_callback=callback)
 
     print(' [*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
@@ -140,26 +140,4 @@ if __name__ == '__main__':
             sys.exit(0)
         except SystemExit:
             os._exit(0)
-
-
-#@app.route("/mail/send", methods=["POST"])
-#def send():
-#    if not all(i in request.form for i in ("template", "to", "subject")):
-#        return abort(400)
-
-#    context = {k: request.form[k] for k in request.form if request.form[k] and k != "template"}
-#    context["logo_cid"] = "cid:" + LOGO_CID
-
-#    email = format_email(request.form["template"], context)
-#    if email[0] is None:
-#        return abort(email[1])
-    
-#    html, txt = email
-#
-#    email = build_email(email[0], email[1], config.FROM_NAME, context["to"], context["subject"])
-
-#    if send_email(email, context["to"]):
-#        return "", 200
-#    return abort(500)
-
 
