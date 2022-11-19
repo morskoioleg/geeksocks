@@ -106,7 +106,7 @@ def main():
     def callback(ch, method, properties, body):
         print(" [x] Received %r" % body)
         print(ch)
-        print(method)
+        print(method.delivery_tag)
         print(properties)
 
 
