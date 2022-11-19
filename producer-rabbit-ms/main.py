@@ -19,14 +19,14 @@ def send():
     context["subject"]="Запрос с сайта"
     context["template"]="verify"
     credentials = pika.PlainCredentials(os.getenv('RMQ_LOGIN'), os.getenv('RMQ_PASSWORD'))
-    parameters = pika.ConnectionParameters('hello-world.default.svc.root.local',
+    parameters = pika.ConnectionParameters('hello-world.default.svc.root.local', #TODO:SERVER FROM ENV
                                            5672,
                                            '/',
                                            credentials)
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
 
-    channel.queue_declare(queue='customer_contact', durable=True)
+    channel.queue_declare(queue='customer_contact', durable=True) #TODO: ADD TTL
     print(json.dumps(context))
     channel.basic_publish(exchange='', 
                           routing_key='customer_contact', 
