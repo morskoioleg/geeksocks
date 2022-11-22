@@ -6,3 +6,26 @@ spec:
   persistence:
     storageClassName: local-storage
     storage: "200Mi"
+  tls:
+    secretName: redis-server-certificate
+    caSecretName: redis-server-certificate
+  rabbitmq:
+    additionalConfig: |
+      ssl_options.fail_if_no_peer_cert = true
+      listeners.tcp = none
+  override:
+    statefulSet:
+      spec:
+        template:
+          spec:
+            containers:	
+            - name: rabbitmq
+              readinessProbe:
+                failureThreshold: 3
+                initialDelaySeconds: 10
+                periodSeconds: 10
+                successThreshold: 1
+                tcpSocket:
+                  port: amqps
+                timeoutSeconds: 5
+

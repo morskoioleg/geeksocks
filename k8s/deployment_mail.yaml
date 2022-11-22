@@ -44,6 +44,16 @@ spec:
                   name: hello-world-default-user
                   key: password
                   optional: false # same as default; "mysecret" must exist
+          volumeMounts:
+          - name: certs
+            mountPath: "/app/certs/"
+            readOnly: true
+      volumes:
+      - name: certs
+        secret:
+          secretName: redis-client-certificate
+          optional: false # default setting; "mysecret" must exist
+
 #          ports:
 #          - containerPort: 5000
 #          volumeMounts:

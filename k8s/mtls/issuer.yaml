@@ -1,0 +1,90 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: bootstrap-issuer
+#  namespace: mtls-demo
+spec:
+  selfSigned: { }
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: root-certificate
+#  namespace: mtls-demo
+spec:
+  isCA: true
+  secretName: root-certificate
+  commonName: "Root Certificate"
+  privateKey:
+    algorithm: RSA
+    size: 4096
+    encoding: PKCS8
+  issuerRef:
+    name: bootstrap-issuer
+    kind: Issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: root-issuer
+#  namespace: mtls-demo
+spec:
+  ca:
+    secretName: root-certificate
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: redis-server-certificate
+#  namespace: mtls-demo
+spec:
+  secretName: redis-server-certificate
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 4096
+  commonName: "hello-world.default.svc.root.local"
+  dnsNames:
+    - hello-world.default.svc.root.local
+  usages:
+    - server auth
+    - key encipherment
+    - digital signature
+  issuerRef:
+    name: root-issuer
+    kind: Issuer
+#---
+#apiVersion: v1
+#kind: Secret
+#metadata:
+#  name: redis-client-certificate-keystore-password
+##  namespace: mtls-demo
+#data:
+#  password: cGFzc3dvcmQxMjM= # "password123"  
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: redis-client-certificate
+#  namespace: mtls-demo
+spec:
+  secretName: redis-client-certificate
+  privateKey:
+    algorithm: RSA
+    encoding: PKCS8
+    size: 4096
+  commonName: "redis demo"
+  usages:
+    - client auth
+    - key encipherment
+    - digital signature
+  issuerRef:
+    name: root-issuer
+    kind: Issuer
+#  keystores:
+#    pkcs12:
+#      create: true
+#      passwordSecretRef:
+#        name: redis-client-certificate-keystore-password
+#        key: password
