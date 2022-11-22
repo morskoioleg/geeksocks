@@ -4,6 +4,7 @@ import os
 import json
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+import ssl
 
 app = Flask(__name__)
 
@@ -35,11 +36,17 @@ def send():
     context["to"]="oleg.intax@gmail.com"
     context["subject"]="Запрос с сайта"
     context["template"]="verify"
+    
+    contextSsl = ssl.create_default_context(cafile="certs/ca.crt")
+    contextSsl.load_cert_chain("certs/tls.crt",
+                               "certs/tls.key")
+    ssl_options = pika.SSLOptions(contextSsl, 'hello-world.default.svc.root.local')
     credentials = pika.PlainCredentials(os.getenv('RMQ_LOGIN'), os.getenv('RMQ_PASSWORD'))
     parameters = pika.ConnectionParameters('hello-world.default.svc.root.local', #TODO:SERVER FROM ENV
-                                           5672,
+                                           5671,
                                            '/',
-                                           credentials)
+                                           credentials,
+                                           ssl_options=ssl_options)
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
 
