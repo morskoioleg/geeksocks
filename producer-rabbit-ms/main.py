@@ -37,7 +37,7 @@ def send():
     context["template"]="verify"
     credentials = pika.PlainCredentials(os.getenv('RMQ_LOGIN'), os.getenv('RMQ_PASSWORD'))
     parameters = pika.ConnectionParameters('hello-world.default.svc.root.local', #TODO:SERVER FROM ENV
-                                           5672,
+                                           5671,
                                            '/',
                                            credentials)
     connection = pika.BlockingConnection(parameters)
