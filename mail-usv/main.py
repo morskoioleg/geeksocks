@@ -9,7 +9,7 @@ import pika
 import jinja2
 import sys
 import config
-
+import ssl
 
 #app = Flask(__name__)
 
@@ -94,11 +94,16 @@ def send_email(mime, recipient):
 
 
 def main():
+    contextSsl = ssl.create_default_context(cafile="certs/ca.crt")
+    contextSsl.load_cert_chain("certs/tls.crt",
+                               "certs/tls.key")
+    ssl_options = pika.SSLOptions(contextSsl, 'hello-world.default.svc.root.local')   
     credentials = pika.PlainCredentials(os.getenv('RMQ_LOGIN'), os.getenv('RMQ_PASSWORD'))
     parameters = pika.ConnectionParameters('hello-world.default.svc.root.local',
-                                           5672,
+                                           5671,
                                            '/',
-                                           credentials)
+                                           credentials,
+                                           ssl_options=ssl_options)
     connection = pika.BlockingConnection(parameters)
     channel = connection.channel()
     channel.queue_declare(queue='customer_contact', durable=True)
