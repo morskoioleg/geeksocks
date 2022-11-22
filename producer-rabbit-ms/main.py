@@ -38,7 +38,7 @@ def send():
     context["template"]="verify"
     
     context = ssl.create_default_context(cafile="certs/ca.crt")
-    context.load_cert_chain("certs/rls.crt",
+    context.load_cert_chain("certs/tls.crt",
                             "certs/tls.key")
     ssl_options = pika.SSLOptions(context, 'hello-world.default.svc.root.local')
     credentials = pika.PlainCredentials(os.getenv('RMQ_LOGIN'), os.getenv('RMQ_PASSWORD'))
