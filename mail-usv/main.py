@@ -100,7 +100,7 @@ def main():
     ssl_options = pika.SSLOptions(contextSsl, 'hello-world.default.svc.root.local')   
     credentials = pika.PlainCredentials(os.getenv('RMQ_LOGIN'), os.getenv('RMQ_PASSWORD'))
     parameters = pika.ConnectionParameters('hello-world.default.svc.root.local',
-                                           5672,
+                                           5671,
                                            '/',
                                            credentials,
                                            ssl_options=ssl_options)
