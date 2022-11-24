@@ -19,7 +19,7 @@ limiter = Limiter(
     app,
     key_func=get_remote_address,
     default_limits=["3 per minute"],
-    storage_uri="memory://",
+    storage_uri="memory://", #TODO. Create real storage
 )
 
 @limiter.exempt
@@ -64,5 +64,5 @@ def send():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True) //TODO PRODUCTION MODE
+    app.run(host='0.0.0.0', debug=True) #TODO PRODUCTION MODE
 
