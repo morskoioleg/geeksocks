@@ -3,7 +3,6 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: bootstrap-issuer
-#  namespace: mtls-demo
 spec:
   selfSigned: { }
 ---
@@ -11,7 +10,6 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: root-certificate
-#  namespace: mtls-demo
 spec:
   isCA: true
   secretName: root-certificate
@@ -28,7 +26,6 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: root-issuer
-#  namespace: mtls-demo
 spec:
   ca:
     secretName: root-certificate
@@ -37,7 +34,6 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: redis-server-certificate
-#  namespace: mtls-demo
 spec:
   secretName: redis-server-certificate
   privateKey:
@@ -54,20 +50,11 @@ spec:
   issuerRef:
     name: root-issuer
     kind: Issuer
-#---
-#apiVersion: v1
-#kind: Secret
-#metadata:
-#  name: redis-client-certificate-keystore-password
-##  namespace: mtls-demo
-#data:
-#  password: cGFzc3dvcmQxMjM= # "password123"  
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: redis-client-certificate
-#  namespace: mtls-demo
 spec:
   secretName: redis-client-certificate
   privateKey:
@@ -82,9 +69,3 @@ spec:
   issuerRef:
     name: root-issuer
     kind: Issuer
-#  keystores:
-#    pkcs12:
-#      create: true
-#      passwordSecretRef:
-#        name: redis-client-certificate-keystore-password
-#        key: password
