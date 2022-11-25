@@ -11,8 +11,6 @@ import sys
 import config
 import ssl
 
-#app = Flask(__name__)
-
 TEMPLATES = os.path.abspath("./templates")
 LOGO_CID = "logo"
 LOGO = "logo.png"
