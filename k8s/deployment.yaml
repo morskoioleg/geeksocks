@@ -21,6 +21,7 @@ spec:
             mountPath: "/app" # <-- change the mount path not to overwrite your .jar
       containers:
         - image: morskoi/geeksocks:0.0.8
+          #TODO liveness readness
           name: geeksocks-nginx
           imagePullPolicy: Always
           ports:
