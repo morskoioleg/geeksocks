@@ -22,28 +22,25 @@ spec:
                 secretKeyRef:
                   name: geeksocks-mail-smtp-secret
                   key: username
-                  optional: false # same as default; "mysecret" must exist
-                            # and include a key named "username"
+                  optional: false
             - name: MAIL_SMTP_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: geeksocks-mail-smtp-secret
                   key: password
-                  optional: false # same as default; "mysecret" must exist
-                            # and include a key named "password"
+                  optional: false
             - name: RMQ_LOGIN
               valueFrom:
                 secretKeyRef:
                   name: hello-world-default-user
                   key: username
-                  optional: false # same as default; "mysecret" must exist
-                            # and include a key named "username"
+                  optional: false
             - name: RMQ_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: hello-world-default-user
                   key: password
-                  optional: false # same as default; "mysecret" must exist
+                  optional: false
           volumeMounts:
           - name: certs
             mountPath: "/app/certs/"
@@ -51,17 +48,5 @@ spec:
       volumes:
       - name: certs
         secret:
-          secretName: redis-client-certificate
-          optional: false # default setting; "mysecret" must exist
-
-#          ports:
-#          - containerPort: 5000
-#          volumeMounts:
-#          - name: passwordfile
-#            mountPath: "/app/secrets/"
-#            readOnly: true
-#      volumes:
-#      - name: passwordfile
-#        secret:
-#          secretName: geeksocks-mail-smtp-secret
-#          optional: false # default setting; "mysecret" must exist
+          secretName: rmq-client-certificate
+          optional: false
