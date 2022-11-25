@@ -29,10 +29,7 @@ spec:
                 secretKeyRef:
                   name: hello-world-default-user
                   key: password
-                  optional: false # same as default; "mysecret" must exist
-                            # and include a key named "password"
-#          ports:
-#          - containerPort: 5000
+                  optional: false 
           volumeMounts:
           - name: certs
             mountPath: "/app/certs/"
@@ -40,5 +37,5 @@ spec:
       volumes:
       - name: certs
         secret:
-          secretName: redis-client-certificate
-          optional: false # default setting; "mysecret" must exist
+          secretName: rmq-client-certificate
+          optional: false
