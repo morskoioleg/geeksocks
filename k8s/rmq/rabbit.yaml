@@ -7,8 +7,8 @@ spec:
     storageClassName: local-storage
     storage: "200Mi"
   tls:
-    secretName: redis-server-certificate
-    caSecretName: redis-server-certificate
+    secretName: rmq-server-certificate
+    caSecretName: rmq-server-certificate
   rabbitmq:
     additionalConfig: |
       ssl_options.fail_if_no_peer_cert = true
