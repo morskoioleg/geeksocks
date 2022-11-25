@@ -33,9 +33,9 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: redis-server-certificate
+  name: rmq-server-certificate
 spec:
-  secretName: redis-server-certificate
+  secretName: rmq-server-certificate
   privateKey:
     algorithm: RSA
     encoding: PKCS8
@@ -54,14 +54,14 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: redis-client-certificate
+  name: rmq-client-certificate
 spec:
-  secretName: redis-client-certificate
+  secretName: rmq-client-certificate
   privateKey:
     algorithm: RSA
     encoding: PKCS8
     size: 4096
-  commonName: "redis demo"
+  commonName: "rmq-client"
   usages:
     - client auth
     - key encipherment
