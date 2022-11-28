@@ -40,9 +40,9 @@ spec:
     algorithm: RSA
     encoding: PKCS8
     size: 4096
-  commonName: "hello-world.default.svc.root.local"
+  commonName: "rabbitmq.default.svc.root.local"
   dnsNames:
-    - hello-world.default.svc.root.local
+    - rabbitmq.default.svc.root.local
   usages:
     - server auth
     - key encipherment
