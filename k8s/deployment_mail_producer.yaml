@@ -20,14 +20,13 @@ spec:
             - name: RMQ_LOGIN
               valueFrom:
                 secretKeyRef:
-                  name: hello-world-default-user
+                  name: rabbitmq-default-user
                   key: username
-                  optional: false # same as default; "mysecret" must exist
-                            # and include a key named "username"
+                  optional: false
             - name: RMQ_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: hello-world-default-user
+                  name: rabbitmq-default-user
                   key: password
                   optional: false 
           volumeMounts:
