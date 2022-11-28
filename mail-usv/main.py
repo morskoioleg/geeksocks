@@ -95,9 +95,9 @@ def main():
     contextSsl = ssl.create_default_context(cafile="certs/ca.crt")
     contextSsl.load_cert_chain("certs/tls.crt",
                                "certs/tls.key")
-    ssl_options = pika.SSLOptions(contextSsl, 'hello-world.default.svc.root.local')   
+    ssl_options = pika.SSLOptions(contextSsl, 'rabbitmq.default.svc.root.local')   
     credentials = pika.PlainCredentials(os.getenv('RMQ_LOGIN'), os.getenv('RMQ_PASSWORD'))
-    parameters = pika.ConnectionParameters('hello-world.default.svc.root.local',
+    parameters = pika.ConnectionParameters('rabbitmq.default.svc.root.local',
                                            5671,
                                            '/',
                                            credentials,
