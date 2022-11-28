@@ -32,13 +32,13 @@ spec:
             - name: RMQ_LOGIN
               valueFrom:
                 secretKeyRef:
-                  name: hello-world-default-user
+                  name: rabbitmq-default-user
                   key: username
                   optional: false
             - name: RMQ_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: hello-world-default-user
+                  name: rabbitmq-default-user
                   key: password
                   optional: false
           volumeMounts:
