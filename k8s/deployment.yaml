@@ -30,7 +30,15 @@ spec:
             - mountPath: /usr/share/nginx/html/img_s3
               name: s3-volume
             - mountPath: /usr/share/nginx/html/app
-              name: workdir
+                name: workdir
+        - image: 'nginx/nginx-prometheus-exporter:0.3.0'
+          args:
+            - '-nginx.scrape-uri=http://localhost:80/nginx_status'
+          ports:
+            - name: nginx-ex-port
+              containerPort: 9113
+              protocol: TCP
+          imagePullPolicy: Always
       volumes:
         - name: s3-volume
           persistentVolumeClaim:
