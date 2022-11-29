@@ -31,7 +31,8 @@ spec:
               name: s3-volume
             - mountPath: /usr/share/nginx/html/app
                 name: workdir
-        - image: 'nginx/nginx-prometheus-exporter:0.3.0'
+        - name: nginx-exporter
+          image: 'nginx/nginx-prometheus-exporter:0.3.0'
           args:
             - '-nginx.scrape-uri=http://localhost:80/nginx_status'
           ports:
