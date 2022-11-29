@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: serviceMonitorSite
+  name: service-monitor-site
   namespace: default
 spec:
   selector:
