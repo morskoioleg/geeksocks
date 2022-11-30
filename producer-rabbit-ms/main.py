@@ -5,8 +5,14 @@ import json
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 import ssl
+from prometheus_client import Counter
 
 app = Flask(__name__)
+
+requests_counter = Counter(
+                        'http_requests_total',
+                        'Total number of htt requests'
+                       )
 
 @app.errorhandler(429)
 def ratelimit_handler(e):
@@ -21,6 +27,8 @@ limiter = Limiter(
     default_limits=["3 per minute"],
     storage_uri="memory://", #TODO. Create real storage
 )
+
+
 
 @limiter.exempt
 @app.route("/mail")
@@ -58,6 +66,7 @@ def send():
                           properties=pika.BasicProperties(
                             delivery_mode = pika.spec.PERSISTENT_DELIVERY_MODE
                           ))
+    requests_counter.labels(api='send_email').inc()
     print(" [x] Sent !'")
     connection.close()
     return "Sent", 200
